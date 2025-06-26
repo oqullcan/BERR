@@ -12,55 +12,71 @@
 <p align="center">
   <img src="https://img.shields.io/badge/status-design%20%26%20specification-blue" alt="Project Status"/>
   <img src="https://img.shields.io/badge/source%20code-pending-lightgrey" alt="Source Code Status"/>
-  <a href="LICENSE-APACHE"><img src="https://img.shields.io/badge/license-MIT%2FApache--2.0-blue" alt="License"/></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT%20%2F%20Apache--2.0-blue" alt="License"/></a>
 </p>
 
 ---
 
-### **Project Status: Architectural Design & Public Specification**
+## 📌 Project Status: Architectural Design & Public Specification
 
-> **Welcome to BERR.** This repository is the public home for the design, specification, and eventual implementation of the Beryllium cryptographic framework.
->
-> **The source code is not yet published.** We believe that robust systems are born from transparent and rigorous design. Therefore, our initial focus is on finalizing the architecture and core specifications in the open. This document is an invitation for review, discussion, and critique from the community *before* the first lines of code are committed.
+Welcome to **BERR**, the public home for the design, specification, and eventual implementation of the Beryllium cryptographic framework.
 
-## The Vision: A New Foundation for Secure Software
+**Note:** Source code has not yet been published. We believe that robust cryptographic systems are born from transparent, auditable, and formally reasoned design. This repository serves as a public forum for specification drafts, architectural models, and community feedback before any code is committed.
 
-The digital landscape is at a crossroads. While demand for secure and private applications has never been higher, developers are often forced to choose between using complex, low-level cryptographic tools that are easy to misuse, or relying on monolithic, application-specific protocols that lack flexibility. BERR is designed to eliminate this false choice.
+---
 
-Our mission is to provide a foundational layer—a true framework—that empowers developers to build a new generation of diverse, end-to-end secure systems with confidence and clarity.
+## 🚀 The Vision: A New Foundation for Secure Software
 
-## How is BERR Different? A Framework, Not Just a Protocol
+The demand for secure, private-by-default applications has never been greater. Yet developers often face a trade-off: either use brittle, low-level cryptographic primitives prone to misuse, or rely on monolithic, application-specific protocols with limited flexibility. **BERR eliminates this compromise.**
 
-Projects like the Signal Protocol have revolutionized secure messaging and proven the value of strong, end-to-end encryption. BERR stands on the shoulders of these giants but addresses a different problem at a different layer of abstraction.
+BERR is a **general-purpose cryptographic framework** designed to empower developers in building diverse, end-to-end secure systems — ranging from secure messaging to IoT, decentralized applications, and collaborative real-time systems — all with post-quantum security guarantees.
 
-In short: **If Signal is a brilliantly engineered, secure car, BERR is the next-generation factory and toolkit designed to build that car, along with secure trucks, drones, and space shuttles.**
+---
 
-Here’s a breakdown of what makes BERR unique:
+## 🔍 What Makes BERR Different?
 
-| Feature                   | Conventional Approach (e.g., Signal Protocol)                               | BERR's Approach (A Framework)                                                                                                                                  |
-| :------------------------ | :-------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1. Scope & Purpose**    | A specialized protocol masterfully designed for **asynchronous messaging**. | A general-purpose **framework** to build a wide array of secure applications: real-time collaboration, IoT, decentralized systems, and more.            |
-| **2. Architecture**       | A sophisticated, highly integrated system.                                  | An explicitly **composable** system. Developers select formal handshake patterns (e.g., `IK`, `XX`) that precisely match their application's trust model. |
-| **3. Post-Quantum**       | A critical **upgrade** to an existing classical protocol.                   | **Post-Quantum Native.** Hybrid cryptography (classical + PQC) is the default, fundamental nature of the framework, not an add-on.                             |
-| **4. Core Vision**        | Primarily focused on **secure transport** of data.                          | Extends beyond transport to include **secure state synchronization** (CRDTs) and **privacy-preserving proofs** (e.g., Private Set Intersection).        |
+| Feature                   | Conventional Approach (e.g., Signal Protocol)                               | BERR Framework Approach                                                                                                                                  |
+| :------------------------ | :-------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Scope & Purpose**        | Specialized protocol for **secure messaging**.                              | General-purpose, composable **framework** for secure applications: messaging, IoT, collaborative apps, decentralized systems, etc.                      |
+| **Architecture**           | Tightly integrated and monolithic.                                           | **Explicitly composable**: Developers select formal handshake patterns (e.g., `IK`, `XX`) matching their application's trust model.                     |
+| **Post-Quantum Security**  | Post-quantum upgrades as extensions or forks.                                | **Post-Quantum Native**: Hybrid cryptography (classical + PQC) is default and baked into Layer 0.                                                       |
+| **Core Vision**            | Focused primarily on secure message transport.                              | Extends to **state synchronization (CRDTs)** and **privacy-preserving proofs** (e.g., Private Set Intersection).                                        |
 
-## Core Principles: The BERR Doctrine
+---
 
-Our design is governed by a strict set of principles. Each one addresses a known failure mode in applied cryptography.
+## 📖 Threat Model
 
-#### 🔒 **Misuse-Resistance by Design**
-*   **The Problem:** Most cryptographic libraries provide powerful but sharp tools. A developer can easily misuse them, for example, by reusing a nonce or forgetting to check a MAC tag.
-*   **BERR's Solution:** The API surface is intentionally restrictive. Nonce management is automated. Key types are strongly enforced. There is no API path to perform unauthenticated encryption.
+**BERR is designed under the assumption of a Dolev-Yao network adversary model**:
+- Adversary has full control over the network: can intercept, drop, replay, reorder, or inject messages.
+- Passive and active attacks are both in scope.
+- Post-compromise security (PCS) and forward secrecy (FS) are supported where applicable.
+- Side-channel attacks (timing, power analysis) are explicitly out of scope for the initial framework design but should be addressed at implementation and deployment level.
 
-#### 🧩 **Transcript-Based Protocol Integrity**
-*   **The Problem:** In complex protocols, an attacker can sometimes take a valid message from one context and "replay" it in another, confusing the state machine.
-*   **BERR's Solution:** We use a transcript-based architecture. Every significant event is cryptographically hashed into a running state. Each new key is derived from the *entire history* of the conversation, binding every action to its exact context.
+---
 
-#### 🛡️ **Aggressive Domain Separation**
-*   **The Problem:** Using the same key for multiple purposes (e.g., encryption and signing) can lead to catastrophic cross-protocol attacks.
-*   **BERR's Solution:** A key's purpose is baked into its derivation. We derive keys from a master secret with a unique, human-readable string (e.g., `"berr-v1-channel-encryption"`), making accidental reuse impossible.
+## 🛡️ Core Security Principles
 
-## Architectural Blueprint
+### 🔒 Misuse-Resistance by Design
+- Nonce management is fully automated.
+- No API paths for unauthenticated encryption.
+- Strongly typed key abstractions prevent accidental misuse (e.g., encryption keys cannot be used for signing).
+
+### 🧾 Transcript-Based Protocol Integrity & Replay Protection
+- Every handshake and protocol message is hashed into a running **transcript state**.
+- Each new key derivation depends on the **entire protocol history**.
+- Replay attacks are prevented by transcript hash chaining and optional sequence numbers in transport messages.
+
+### 🛡️ Aggressive Domain Separation
+- All derived keys and secrets are **context-bound** by unique, human-readable labels (e.g., `berr-v1-handshake`).
+- Enforced at the API and cryptographic primitive level.
+
+### 🎲 Cryptographically Secure Randomness
+- All cryptographic operations requiring randomness (e.g., ephemeral key generation, nonce seeds) rely on a secure entropy source (e.g., OS-provided CSPRNG via libsodium, Rust `rand_core` + hardware entropy where available).
+- Entropy quality is validated at runtime.
+
+---
+
+## 🏗️ Architectural Blueprint
 
 ```mermaid
 graph TD
@@ -82,35 +98,61 @@ graph TD
 
     L2 --> L1
     L1 --> L0
+````
+
+---
+
+## 📅 Development Roadmap
+
+**Phase 1: Specification & RFC (In Progress)**
+
+* [x] Define system architecture and core doctrines.
+* [ ] Publish detailed cryptographic specifications for all layers.
+* [ ] Community discussion & feedback period via Issues.
+* [ ] Invite peer-review from security researchers.
+
+**Phase 2: Core Implementation (`berr::core`)**
+
+* [ ] Publish initial source code.
+* [ ] Implement foundational cryptographic primitives with hybrid PQC support.
+
+**Phase 3: Protocol Layer & Examples**
+
+* [ ] Implement handshake and identity modules.
+* [ ] Provide reference application examples.
+
+**Phase 4: Advanced Features & Formal Audits**
+
+* [ ] Implement advanced Layer 2 protocols (CRDT sync, PSI, etc.).
+* [ ] Engage third-party auditors for specification and code review.
+* [ ] Optionally explore formal verification (e.g., Tamarin/ProVerif).
+
+---
+
+## 💬 How to Get Involved
+
+This project is in its most critical design phase. Contributions of any kind are welcome.
+
+* 📌 **Watch this repository** for updates.
+* 📌 **Open an Issue** to discuss assumptions, suggest improvements, or request clarifications.
+* 📌 **Review and critique the upcoming specifications when published.**
+
+---
+
+## 📄 License
+
+The BERR framework is **dual-licensed** under the terms of:
+
+* [MIT License](LICENSE-MIT)
+* [Apache License 2.0](LICENSE-APACHE)
+
+You may freely choose either license for your use.
+
+---
+
+## 🔐 Disclaimer
+
+**BERR is experimental software under active specification and design.**
+No production deployments should be based on this framework until a formal security audit is completed and v1.0 is released.
+
 ```
-
-## Development Roadmap & Current Focus
-
-Our development is transparent and phased.
-
-**Current Focus:** Finalizing the detailed cryptographic specifications for `berr::core` and the `berr::protocol::handshake` module.
-
--   [ ] **Phase 1: Specification & RFC (In Progress)**
-    -   [ ] Publish detailed design documents for all layers.
-    -   [ ] Community review and feedback period.
-    -   [ ] Finalize the public API and cryptographic constructions.
--   [ ] **Phase 2: Core Implementation (`berr::core`)**
-    -   [ ] **Source code publication begins.**
-    -   [ ] Implement the foundational hybrid cryptographic primitives.
--   [ ] **Phase 3: Protocol Layer & Examples**
-    -   [ ] Implement the `Handshake` and `Identity` primitives.
-    -   [ ] Provide reference examples demonstrating the framework's capabilities.
--   [ ] **Phase 4: Advanced Features & Audits**
-    -   [ ] Implement Layer 2 protocols.
-    -   [ ] Prepare for and undergo third-party security audits.
-
-## How to Get Involved
-
-This is a community-driven effort in its most crucial stage.
-*   **Watch this repository** to be notified of updates and the publication of source code.
-*   **Join the Conversation in Issues:** The [Issues](https://github.com/oqullcan/BERR/issues) tab is the primary venue for all public discussion. Feel free to open an issue to ask questions, challenge our design assumptions, or propose new ideas.
-*   **Review the Specifications:** Once published, our design documents will be the primary focus for community feedback.
-
-## License
-
-The BERR framework will be dual-licensed under the terms of both the **MIT License** and the **Apache License 2.0**, granting maximum flexibility to developers and contributors.
