@@ -2,7 +2,7 @@
 ---
 
 <div align="center">
-  <h1 style="font-weight: bold;">BERR (Beryllium)</h1>
+  <h1 style="font-weight: bold;">BERR (Berrmili)</h1>
 </div>
 
 <p align="center">
@@ -19,7 +19,7 @@
 
 ## 📌 Project Status: Architectural Design & Public Specification
 
-Welcome to **BERR**, the public home for the design, specification, and eventual implementation of the Beryllium cryptographic framework.
+Welcome to **BERR**, the public home for the design, specification, and eventual implementation of the Berrmili cryptographic framework.
 
 **Note:** Source code has not yet been published. We believe that robust cryptographic systems are born from transparent, auditable, and formally reasoned design. This repository serves as a public forum for specification drafts, architectural models, and community feedback before any code is committed.
 
